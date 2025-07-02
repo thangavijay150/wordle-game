@@ -1,5 +1,6 @@
 package org.sportradar;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
@@ -10,9 +11,13 @@ public class GameEngine {
   private final FeedbackGenerator feedbackGenerator = new FeedbackGenerator();
 
   public void play(int maxAttempts, int wordLength) {
-    List<String> words = resourceLoader.loadWords(wordLength);
+    String fileName = "words.txt";
+    InputStream inputStream =
+        WordleGameApplication.class.getClassLoader().getResourceAsStream(fileName);
+    List<String> words = resourceLoader.loadWords(inputStream, fileName, wordLength);
     if (words.isEmpty()) {
-      System.out.println("The word list is empty. Check the file content and modify word length accordingly");
+      System.out.println(
+          "The word list is empty. Check the file content and modify word length accordingly");
       return;
     }
     String target = words.get(new Random().nextInt(words.size()));
