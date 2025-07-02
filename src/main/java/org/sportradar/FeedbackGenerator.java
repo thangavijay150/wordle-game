@@ -1,28 +1,51 @@
 package org.sportradar;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class FeedbackGenerator {
 
-    public void generateFeedback(String guess, String target, int wordLength) {
-        Map<Character, Integer> targetLetterCountMap = new HashMap<>();
-        for (char targetChar : target.toCharArray()) {
-            targetLetterCountMap.put(targetChar, targetLetterCountMap.getOrDefault(targetChar, 0) + 1);
+    private static final String GREEN = "\u001B[32m";
+    private static final String YELLOW = "\u001B[33m";
+    private static final String DEFAULT = "\u001B[0m";
+
+    public String generateFeedback(String guess, String target, int wordLength) {
+        LetterStatus[] statuses = new LetterStatus[wordLength];
+        HashMap<Character, Integer> letterCounts = new HashMap<>();
+        for (char c : target.toCharArray()) {
+            letterCounts.put(c, letterCounts.getOrDefault(c, 0) + 1);
         }
-        System.out.print("  ");
+
         for (int i = 0; i < wordLength; i++) {
-            char guessedChar = guess.charAt(i);
-            if (guessedChar == target.charAt(i)) {
-                System.out.print("\u001B[32m" + guessedChar + "\u001B[0m ");
-            } else if (target.contains(String.valueOf(guessedChar)) && targetLetterCountMap.get(guessedChar) > 0) {
-                System.out.print("\u001B[33m" + guessedChar + "\u001B[0m ");
-                targetLetterCountMap.put(guessedChar, targetLetterCountMap.get(guessedChar) - 1);
-            } else {
-                System.out.print(guessedChar + " ");
+            if (guess.charAt(i) == target.charAt(i)) {
+                statuses[i] = LetterStatus.CORRECT;
+                letterCounts.put(guess.charAt(i), letterCounts.get(guess.charAt(i)) - 1);
             }
         }
-        System.out.println();
 
+        for (int i = 0; i < wordLength; i++) {
+            if (statuses[i] != null) continue;
+            char c = guess.charAt(i);
+            int count = letterCounts.getOrDefault(c, 0);
+            if (count > 0) {
+                statuses[i] = LetterStatus.PRESENT;
+                letterCounts.put(c, count - 1);
+            } else {
+                statuses[i] = LetterStatus.ABSENT;
+            }
+        }
+        StringBuilder result = new StringBuilder("  ");
+        for (int i = 0; i < wordLength; i++) {
+            char c = guess.charAt(i);
+            switch (statuses[i]) {
+                case CORRECT -> result.append(GREEN).append(c).append(DEFAULT);
+                case PRESENT -> result.append(YELLOW).append(c).append(DEFAULT);
+                case ABSENT -> result.append(c);
+            }
+            result.append(" ");
+        }
+
+        return result.toString();
     }
+
+    private enum LetterStatus { CORRECT, PRESENT, ABSENT }
 }

@@ -10,9 +10,9 @@ public class GameEngine {
   private final FeedbackGenerator feedbackGenerator = new FeedbackGenerator();
 
   public void play(int maxAttempts, int wordLength) {
-    List<String> words = resourceLoader.loadWords("words.txt", wordLength);
+    List<String> words = resourceLoader.loadWords(wordLength);
     if (words.isEmpty()) {
-      System.out.println("The word list is empty. Check the file content and word length");
+      System.out.println("The word list is empty. Check the file content and modify word length accordingly");
       return;
     }
     String target = words.get(new Random().nextInt(words.size()));
@@ -29,7 +29,7 @@ public class GameEngine {
         continue;
       }
 
-      feedbackGenerator.generateFeedback(guess, target, wordLength);
+      System.out.println(feedbackGenerator.generateFeedback(guess, target, wordLength));
       if (guess.equals(target)) {
         System.out.println("Congrats! You guessed the correct word.");
         return;

@@ -8,11 +8,11 @@ import java.util.List;
 
 public class ResourceLoader {
 
-  public List<String> loadWords(String fileName, int wordLength) {
+  protected List<String> loadWords(int wordLength) {
     try (InputStream inputStream =
-        WordleGameApplication.class.getClassLoader().getResourceAsStream(fileName)) {
+        WordleGameApplication.class.getClassLoader().getResourceAsStream("words.txt")) {
       if (inputStream == null) {
-        System.err.println("Resource not found: " + fileName);
+        System.err.println("Resource not found: " + "words.txt");
         return List.of();
       }
       return new BufferedReader(new InputStreamReader(inputStream))
