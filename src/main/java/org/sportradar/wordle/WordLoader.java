@@ -1,11 +1,11 @@
-package org.sportradar;
+package org.sportradar.wordle;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 
-public class ResourceLoader {
+public class WordLoader {
 
   public List<String> loadWords(InputStream inputStream, String filename, int wordLength) {
     if (inputStream == null) {
